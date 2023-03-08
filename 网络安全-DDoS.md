@@ -53,7 +53,8 @@ DDoS 攻击还有其他更具体的迹象，具体取决于攻击的类型。
 
 **HTTP 洪水**
 
-HTTP 洪水攻击类似于同时在大量不同计算机的 Web 浏览器中一次又一次地按下刷新 ——大量 HTTP 请求涌向服务器，导致拒绝服务。
+[HTTP 洪水](https://www.cloudflare-cn.com/learning/ddos/http-flood-ddos-attack/)攻击类似于同时在大量不同计算机的 Web 浏览器中一次又一次地按下刷新 ——大量 HTTP 请求涌
+向服务器，导致拒绝服务。
 
 这种类型的攻击有简单的，也有复杂的。
 
