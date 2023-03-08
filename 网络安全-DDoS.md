@@ -144,3 +144,6 @@ HTTP 洪水攻击类似于同时在大量不同计算机的 Web 浏览器中一�
 这种方法就好比将湍急的河流引入若干独立的小水渠，将分布式攻击流量的影响分散到可以管理的程度，从而分散破坏力。
 
 [Anycast 网络](https://www.cloudflare-cn.com/learning/cdn/glossary/anycast-network/)在缓解 DDoS 攻击方面的可靠性取决于攻击规模及网络规模和效率。
+
+# 其他文章
+[蚂蚁集团](https://antchain.antgroup.com/docs/2/28401)
