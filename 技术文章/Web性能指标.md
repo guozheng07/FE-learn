@@ -43,6 +43,62 @@ Navigation Timing API 提供了文档构建过程中的多数性能指标，**�
 
 但是**对于 SPA（Single Page Application） 类型的页面，由于存在异步模块及远程数据的加载过程，需要找到一个能够衡量首次渲染和首屏时间的指标**，于是下面会对 SPA 模式下的网页渲染指标进行更深入的探索。
 
+# 2.SPA渲染指标的探索与验证
+SPA 页面与传统直出页面最大不同在于 **JS 对象与 DOM 结构之间的相互响应**。由于这种模式在 HTML 解释器在遍历主文档时只挂载一个<div id="app"> 节点，当 HTML 结构解析完毕时，真实的页面主体还未从 JS 对象转换成 DOM 插入页面。因此针对这种情况，需要单独分析与验证，我们先看下SPA 框架是什么时候完成首次渲染/首屏渲染的？如下图。
 
+![image](https://user-images.githubusercontent.com/42236890/230046633-49f11e2d-2d11-4d6f-96a6-1b8a8e768d86.png)
 
+## 2.1 如何计算 SPA 的首次渲染时间？
+SPA 是何时将首屏DOM节点插入网页中的呢？以 React 为例，准备了一个简单的场景进行验证。
+```
+// App.js
 
+const App = () => {
+// ... 省略
+  return (
+    <div>
+      <h1>要开始首次渲染了哦</h1>
+      <input value={inputValue} onChange={e => setInputValue(e.target.value)} />
+    </div>
+  )
+}
+```
+利用 Chrome DevTools for Performance，观察 React 在渲染过程中性能相关的时间节点。
+
+![image](https://user-images.githubusercontent.com/42236890/230046969-e2931a34-5359-4deb-9424-b2f92bb3692e.png)
+
+Chrome DevTools for Performance 我们从上到下关注 Network、Timings和Main 三栏。Network 记录了从页面开始加载后，资源请求的情况。Timings标记了一些重要的时间点如（DomContentLoaded、First Paint、Loaded）。Main展示了浏览器于何时会执行HTML解析与JavaScript文件解析。
+
+页面开始加载后，浏览器按以下顺序执行页面解析构建与渲染：
+- 请求所有相关资源
+- React接管渲染，开始执行渲染
+- 浏览器标记DCL时间
+- 浏览器开始渲染
+- 首屏时间
+- 浏览器完成渲染，标记Loaded时间
+
+可以看到 React 项目在 DCL（SPA框架逻辑执行结束） 后，浏览器进行了首次渲染。在真实场景的项目中，也进行了多次同样的验证，观察到的现象与前述一致。
+
+由此我们得出结论：SPA 页面会在渲染树构建完成后执行 SPA 框架逻辑，将虚拟 DOM 转换成 HTML 插入页面，**首屏 DOM在 DCL 时间点完成插入，此时开始页面主体渲染**。
+  
+## 2.2 如何计算 SPA 的首屏时间？
+根据上面的结论，DCL 代表了 JavaScript 框架执行逻辑插入页面主体 DOM，这也代表了页面主体开始渲染的时间。那对于用户来说，页面首屏渲染完成的时间点怎么计算呢？因此 Raptor 提出首屏时间（First Screen Time）的采集计算模型。
+
+计算模型中将首屏时间定义为浏览器视窗范围内的 DOM 达到稳定状态的时间。为了监测这个稳定状态，核心算法主要使用接口：MutationObserver。
+
+MutationObserver 实例能够监听 DOM 变化并执行回调。**当一定时间内没有再监听到首屏内 DOM 变化或首屏外mutation超过一定次数时，即可得出结果并停止监听**。
+
+![image](https://user-images.githubusercontent.com/42236890/230048356-cabad3ed-c48b-4059-bbca-5b0d6dc66244.png)
+
+此算法计算的首屏时间，在大部分场景下，与自定义打点的首屏时间是相近的，误差并不大，可以作为统计首屏时间的依据。
+
+# 3.利用Web性能指标排查性能问题
+我们已经掌握了5个 Web 页面要关注的关键性能指标，正确掌握它们的使用姿势，才能准确分析页面性能的问题所在，从而进行针对性的优化。那么不同阶段的耗时过长，分别代表了一些什么问题呢？
+
+![image](https://user-images.githubusercontent.com/42236890/230048822-7f2da134-7bcf-421f-9c89-092218306663.png)
+
+![image](https://user-images.githubusercontent.com/42236890/230049019-2954715b-bff7-4731-9a51-be1b84f640b5.png)
+
+![image](https://user-images.githubusercontent.com/42236890/230049082-1c409635-63b5-4fa2-abd4-09cb4dc007e6.png)
+
+依据上表，Web性能优化的关键在于尽快下载处理关键资源，同时消除非关键资源的阻塞，让用户花在网站上的大多数时间是在使用时等待响应，而不是等待资源的加载。
