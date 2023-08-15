@@ -280,3 +280,94 @@ let v3:boolean = f(); // 不报错
 为什么never类型可以赋值给任意其他类型呢？ -> 这也跟集合论有关，空集是任何集合的子集。**TypeScript 就相应规定，任何类型都包含了never类型**。因此，never类型是任何其他类型所共有的，TypeScript 把这种情况称为“底层类型”（bottom type）。
 
 总之，**TypeScript 有两个“顶层类型”（any和unknown），但是“底层类型”只有never唯一一个**。
+# TypeScript 的类型系统
+## 基本类型
+JavaScript 语言（注意，不是 TypeScript）将值分成8种类型。
+- boolean
+- string
+- number
+- bigint
+- symbol
+- object
+- undefined
+- null
+
+TypeScript 继承了 JavaScript 的类型设计，以上8种类型可以看作 TypeScript 的基本类型。
+
+上面所有类型的名称都是小写字母，首字母大写的Number、String、Boolean等在 JavaScript 语言中都是内置对象，而不是类型名称。
+
+undefined 和 null 既可以作为值，也可以作为类型，取决于在哪里使用它们。
+
+这8种基本类型是 TypeScript 类型系统的基础，复杂类型由它们组合而成。
+### boolean 类型
+boolean类型只包含true和false两个布尔值。
+```
+const x:boolean = true;
+const y:boolean = false;
+```
+### string 类型
+string类型包含所有字符串。
+```
+const x:string = 'hello';
+const y:string = `${x} world`;
+```
+### number 类型
+number类型包含所有整数和浮点数。
+```
+const x:number = 123;
+const y:number = 3.14;
+const z:number = 0xffff;
+```
+### bigint 类型
+bigint 类型包含所有的大整数。
+```
+const x:bigint = 123n;
+const y:bigint = 0xffffn;
+```
+bigint 与 number 类型不兼容。
+```
+const x:bigint = 123; // 报错
+const y:bigint = 3.14; // 报错
+```
+### symbol 类型
+symbol 类型包含所有的 Symbol 值。
+```
+const x:symbol = Symbol();
+```
+### object 类型
+object 类型包含了所有对象、数组和函数。
+```
+const x:object = { foo: 123 };
+const y:object = [1, 2, 3];
+const z:object = (n:number) => n + 1;
+```
+### undefined 类型，null 类型
+undefined 和 null 是两种独立类型，它们各自都只有一个值。
+
+undefined 类型只包含一个值undefined，表示未定义（即还未给出定义，以后可能会有定义）。
+```
+let x:undefined = undefined;
+```
+null 类型也只包含一个值null，表示为空（即此处没有值）。
+```
+const x:null = null;
+```
+如果没有声明类型的变量，被赋值为undefined或null，它们的类型会被推断为any。
+```
+let a = undefined;   // any
+const b = undefined; // any
+
+let c = null;        // any
+const d = null;      // any
+```
+如果希望避免这种情况，则需要打开编译选项strictNullChecks。
+```
+// 打开编译设置 strictNullChecks
+let a = undefined;   // undefined
+const b = undefined; // undefined
+
+let c = null;        // null
+const d = null;      // null
+```
+## 包装对象类型
+### 包装对象的概念
