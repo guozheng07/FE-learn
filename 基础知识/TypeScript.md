@@ -371,3 +371,91 @@ const d = null;      // null
 ```
 ## 包装对象类型
 ### 包装对象的概念
+JavaScript 的8种类型之中，undefined和null其实是两个特殊值，object属于复合类型，剩下的五种属于**原始类型（primitive value），代表最基本的、不可再分的值**。
+- boolean
+- string
+- number
+- bigint
+- symbol
+
+**上面这五种原始类型的值，都有对应的包装对象（wrapper object）**。 **所谓“包装对象”，指的是这些值在需要时，会自动产生的对象**。
+```
+'hello'.charAt(1) // 'e'
+```
+上面示例中，字符串hello执行了charAt()方法。但是，在 JavaScript 语言中，只有对象才有方法，原始类型的值本身没有方法。这行代码之所以可以运行，就是因为**在调用方法时，字符串会自动转为包装对象，charAt()方法其实是定义在包装对象上**。
+
+这样的设计大大方便了字符串处理，省去了将原始类型的值手动转成对象实例的麻烦。
+
+五种包装对象之中，symbol 类型和 bigint 类型无法直接获取它们的包装对象（即Symbol()和BigInt()不能作为构造函数使用），剩下三种可以。
+- Boolean()
+- String()
+- Number()
+
+以上三个构造函数，执行后可以直接获取某个原始类型值的包装对象。
+```
+const s = new String('hello');
+typeof s // 'object'
+s.charAt(1) // 'e'
+```
+上面示例中，s就是字符串hello的包装对象，typeof运算符返回object，不是string，但是本质上它还是字符串，可以使用所有的字符串方法。
+
+注意，String()**只有当作构造函数使用时（即带有new命令调用），才会返回包装对象**。如果当作普通函数使用（不带有new命令），返回就是一个普通字符串。其他两个构造函数Number()和Boolean()也是如此。
+### 包装对象类型与字面量类型
+**由于包装对象的存在，导致每一个原始类型的值都有包装对象和字面量两种情况**。
+```
+'hello' // 字面量
+new String('hello') // 包装对象
+```
+为了区分这两种情况，TypeScript 对五种原始类型分别提供了大写和小写两种类型。
+- Boolean 和 boolean
+- String 和 string
+- Number 和 number
+- BigInt 和 bigint
+- Symbol 和 symbol
+
+其中，**大写类型同时包含包装对象和字面量两种情况，小写类型只包含字面量，不包含包装对象**。
+```
+const s1:String = 'hello'; // 正确
+const s2:String = new String('hello'); // 正确
+
+const s3:string = 'hello'; // 正确
+const s4:string = new String('hello'); // 报错
+```
+**建议只使用小写类型，不使用大写类型。因为绝大部分使用原始类型的场合，都是使用字面量，不使用包装对象**。而且，**TypeScript 把很多内置方法的参数，定义成小写类型，使用大写类型会报错**。
+```
+const n1:number = 1;
+const n2:Number = 1;
+
+Math.abs(n1) // 1
+Math.abs(n2) // 报错
+```
+Symbol()和BigInt()这两个函数不能当作构造函数使用，所以没有办法直接获得 symbol 类型和 bigint 类型的包装对象，除非使用下面的写法。但是，它们没有使用场景，因此**Symbol和BigInt这两个类型虽然存在，但是完全没有使用的理由**。
+```
+let a = Object(Symbol());
+let b = Object(BigInt());
+```
+注意，目前在 TypeScript 里面，symbol和Symbol两种写法没有差异，bigint和BigInt也是如此，不知道是否属于官方的疏忽。建议始终使用小写的symbol和bigint，不使用大写的Symbol和BigInt。
+## Object 类型与 object 类型
+TypeScript 的对象类型也有大写Object和小写object两种。
+### Object 类型
+**大写的Object类型代表 JavaScript 语言里面的广义对象**。所有可以转成对象的值，都是Object类型，这囊括了几乎所有的值。
+```
+let obj:Object;
+ 
+obj = true;
+obj = 'hi';
+obj = 1;
+obj = { foo: 123 };
+obj = [1, 2];
+obj = (a:number) => a + 1;
+```
+上面示例中，原始类型值、对象、数组、函数都是合法的Object类型。
+
+**除了undefined和null这两个值不能转为对象，其他任何值都可以赋值给Object类型**。
+```
+let obj:Object;
+
+obj = undefined; // 报错
+obj = null; // 报错
+```
+另外，空对象{}是Object类型的简写形式，所以使用Object时常常用空对象代替。
