@@ -438,9 +438,10 @@ let b = Object(BigInt());
 ## Object 类型与 object 类型
 TypeScript 的对象类型也有大写Object和小写object两种。
 ### Object 类型
-**大写的Object类型代表 JavaScript 语言里面的广义对象**。所有可以转成对象的值，都是Object类型，这囊括了几乎所有的值。
+**大写的Object类型代表 JavaScript 语言里面的广义对象。所有可以转成对象的值，都是Object类型，这囊括了几乎所有的值**。 另外，**空对象{}是Object类型的简写形式，所以使用Object时常常用空对象代替**。
 ```
-let obj:Object;
+// let obj:Object;
+let obj:{};
  
 obj = true;
 obj = 'hi';
@@ -458,4 +459,29 @@ let obj:Object;
 obj = undefined; // 报错
 obj = null; // 报错
 ```
-另外，空对象{}是Object类型的简写形式，所以使用Object时常常用空对象代替。
+**无所不包的Object类型既不符合直觉，也不方便使用**。
+### object 类型
+**小写的object类型代表 JavaScript 里面的狭义对象，即可以用字面量表示的对象，只包含对象、数组和函数，不包括原始类型的值**。
+```
+let obj:object;
+ 
+obj = { foo: 123 };
+obj = [1, 2];
+obj = (a:number) => a + 1;
+obj = true; // 报错
+obj = 'hi'; // 报错
+obj = 1; // 报错
+```
+大多数时候，我们使用对象类型，只希望包含真正的对象，不希望包含原始类型。所以，**建议总是使用小写类型object，不使用大写类型Object**。
+
+**无论是大写的Object类型，还是小写的object类型，都只包含 JavaScript 内置对象原生的属性和方法**，用户自定义的属性和方法都不存在于这两个类型之中。
+```
+const o1:Object = { foo: 0 };
+const o2:object = { foo: 0 };
+
+o1.toString() // 正确
+o1.foo // 报错
+
+o2.toString() // 正确
+o2.foo // 报错
+```
