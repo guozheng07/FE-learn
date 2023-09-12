@@ -485,3 +485,56 @@ o1.foo // 报错
 o2.toString() // 正确
 o2.foo // 报错
 ```
+## undefined 和 null 的特殊性 
+undefined和null既是值，又是类型。
+
+**作为值，它们有一个特殊的地方：任何其他类型的变量都可以赋值为undefined或null**。
+```
+let age:number = 24;
+
+age = null;      // 正确
+age = undefined; // 正确
+```
+但是有时候，这并不是开发者想要的行为，也不利于发挥类型系统的优势。
+```
+const obj:object = undefined;
+obj.toString() // 编译不报错，运行就报错
+```
+为了避免这种情况，及早发现错误，TypeScript 提供了一个编译选项strictNullChecks。只要打开这个选项，undefined和null就不能赋值给其他类型的变量，只能赋值给自身，或者any类型和unknown类型的变量。
+## 值类型
+TypeScript 规定，单个值也是一种类型，称为“值类型”。
+```
+let x:'hello';
+
+x = 'hello'; // 正确
+x = 'world'; // 报错
+```
+TypeScript 推断类型时，**遇到const命令声明的变量，如果代码里面没有注明类型，就会推断该变量是值类型**。
+```
+// x 的类型是 "https"
+const x = 'https';
+
+// y 的类型是 string
+const y:string = 'https';
+```
+这样推断是合理的，因为const命令声明的变量，一旦声明就不能改变，相当于常量。值类型就意味着不能赋为其他值。
+
+**const命令声明的变量，如果赋值为对象，并不会推断为值类型。**
+```
+// x 的类型是 { foo: number }
+const x = { foo: 1 };
+```
+变量x没有被推断为值类型，而是推断属性foo的类型是number。这是因为 JavaScript 里面，const变量赋值为对象时，属性值是可以改变的。
+
+值类型可能会出现一些很奇怪的报错。
+```
+const x:5 = 4 + 1; // 报错
+```
+等号左侧的类型是数值5，等号右侧4 + 1的类型，TypeScript 推测为number。由于5是number的子类型，number是5的父类型，父类型不能赋值给子类型，所以报错了（详见本章后文）。
+
+## 联合类型
+## 交叉类型
+## type 命令
+## typeof 运算符
+## 块级类型声明
+## 类型的兼容
