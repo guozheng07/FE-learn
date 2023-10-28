@@ -10,6 +10,8 @@ git reset --hard origin。
 git reset --soft HEAD~1
 # 撤销最近的一次commit，并且抛弃这次commit中的所有更改
 git reset --hard HEAD~1
+# 跳过pre-commit钩子验证（有一些自定义卡控规则，但是不太准确时可以申请跳过）
+git commit --no-verify
 # 解除项目原来远程仓库的关联
 1. 切换到项目的根目录，查看项目原有的remote：git remote -v
 2. 解除与原来远程仓库的关联：git remote rm origin
