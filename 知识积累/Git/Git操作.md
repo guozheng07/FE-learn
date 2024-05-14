@@ -51,4 +51,7 @@ git revert 769bbf8040b
 ```
 git push
 ```
-
+# 移除对某个文件的跟踪
+1. 使用 git rm --cached example.txt 命令。这将会从 Git 版本控制中移除该文件，但是不会删除物理文件。
+2. 在 .gitignore 文件中添加example.txt，然后保存并关闭文件。
+3. 执行 git add . 和 git commit -m "remove example.txt from version control" 命令，提交更改。

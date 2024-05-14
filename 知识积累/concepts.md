@@ -1,0 +1,13 @@
+- Web：World Wide Web，中文译为万维网
+- MVVM：Model-View-ViewModel，数据驱动
+  - Model：模型层，负责处理业务逻辑以及和服务器端进行交互
+  - View：视图层，负责将数据模型转化为UI展示出来，可以简单的理解为HTML页面
+  - ViewModel：视图模型层，用来连接Model和View，是Model和View之间的通信桥梁（数据变化后更新视图；视图变化后更新数据）
+    - 监听器（Observer）：对所有数据的属性进行监听
+    - 解析器（Compiler）：对每个元素节点的指令进行扫描跟解析,根据指令模板替换数据,以及绑定相应的更新函数
+- Directives：指令是带有 v- 前缀的特殊属性作用，当表达式的值改变时，将其产生的连带影响，响应式地作用于 DOM
+  - 条件渲染：v-if
+  - 列表渲染：v-for
+  - 属性绑定：v-bind
+  - 事件绑定：v-on
+  - 双向数据绑定：v-model
