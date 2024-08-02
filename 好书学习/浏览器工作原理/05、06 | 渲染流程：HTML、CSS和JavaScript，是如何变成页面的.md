@@ -234,3 +234,260 @@ DOM解析和CSS解析是两个并行的过程，所以这也解释了为什么CS
 重排：会重新执行整个渲染流程 -> 布局、分层、光栅化、绘制。 重绘：少了布局阶段。
 
 实践： 动画代替（动画是在合成线程里完成，不会造成重排重绘） Debounce window resize 事件 vue 虚拟dom 触发repaint reflow的操作尽量放在一起，比如改变dom高度和设置margin分开写，可能会出发两次重排
+
+
+
+重排（Reflow）是指浏览器重新计算元素的几何属性（如位置和尺寸）并重新构建布局的过程。重排是一个代价较高的操作，因为它可能会影响整个页面的布局。以下是一些常见的会引发重排的操作：
+
+### 1. 修改几何属性
+
+任何改变元素几何属性的操作都会引发重排，例如：
+
+- 改变元素的宽度、高度、边距、边框、填充等。
+- 改变元素的 `display`、`position`、`float`、`top`、`left`、`right`、`bottom` 等属性。
+
+```javascript
+element.style.width = '100px';
+element.style.height = '200px';
+element.style.margin = '10px';
+element.style.padding = '5px';
+element.style.border = '1px solid black';
+element.style.display = 'block';
+element.style.position = 'absolute';
+element.style.top = '50px';
+element.style.left = '50px';
+```
+
+### 2. 添加或删除DOM节点
+
+添加、删除或移动DOM节点会引发重排，因为这些操作会改变文档的结构。
+
+```javascript
+const newElement = document.createElement('div');
+document.body.appendChild(newElement); // 添加节点
+document.body.removeChild(newElement); // 删除节点
+```
+
+### 3. 修改内容
+
+修改元素的文本内容或属性会引发重排，因为这些操作可能会改变元素的尺寸和布局。
+
+```javascript
+element.textContent = 'New content';
+element.setAttribute('class', 'new-class');
+```
+
+### 4. 读取布局信息
+
+读取某些布局信息会强制浏览器进行重排，以确保返回的值是最新的。这些属性和方法包括：
+
+- `offsetWidth`、`offsetHeight`、`offsetTop`、`offsetLeft`
+- `clientWidth`、`clientHeight`、`clientTop`、`clientLeft`
+- `scrollWidth`、`scrollHeight`、`scrollTop`、`scrollLeft`
+- `getComputedStyle` 方法
+
+```javascript
+const width = element.offsetWidth;
+const height = element.offsetHeight;
+const style = window.getComputedStyle(element);
+```
+
+### 5. 改变窗口大小
+
+改变浏览器窗口的大小会引发重排，因为需要重新计算所有元素的布局。
+
+### 6. 改变字体
+
+改变元素的字体属性（如 `font-size`、`font-family`）会引发重排，因为这些操作可能会改变文本的尺寸和布局。
+
+```javascript
+element.style.fontSize = '16px';
+element.style.fontFamily = 'Arial';
+```
+
+### 7. CSS伪类
+
+某些CSS伪类（如 `:hover`、`:focus`）的状态变化也会引发重排。
+
+```css
+.element:hover {
+    width: 200px;
+}
+```
+
+### 优化建议
+
+为了减少重排的次数和性能消耗，可以采取以下优化措施：
+
+1. **合并样式更改**：将多次样式更改合并为一次更改，减少重排的次数。
+
+```javascript
+// 不推荐：多次更改样式
+element.style.width = '100px';
+element.style.height = '200px';
+
+// 推荐：合并更改
+element.style.cssText = 'width: 100px; height: 200px;';
+```
+
+2. **使用类名替代内联样式**：通过添加或删除类名来更改样式，而不是直接修改内联样式。
+
+```javascript
+// 不推荐：直接修改内联样式
+element.style.display = 'none';
+
+// 推荐：使用类名
+element.classList.add('hidden');
+```
+
+3. **批量操作DOM**：在进行多次DOM操作时，使用文档片段（DocumentFragment）或将元素脱离文档流，操作完成后再插入文档。
+
+```javascript
+// 使用文档片段
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 100; i++) {
+    const newElement = document.createElement('div');
+    fragment.appendChild(newElement);
+}
+document.body.appendChild(fragment);
+```
+
+4. **缓存布局信息**：如果需要多次访问布局信息，应将其缓存起来，避免多次触发重排。
+
+```javascript
+// 不推荐：多次访问布局信息
+const width = element.offsetWidth;
+const height = element.offsetHeight;
+const top = element.offsetTop;
+
+// 推荐：缓存布局信息
+const rect = element.getBoundingClientRect();
+const width = rect.width;
+const height = rect.height;
+const top = rect.top;
+```
+
+通过理解和避免引发重排的操作，可以显著提高网页的性能和用户体验。
+
+重绘（Repaint）是指浏览器重新绘制元素的外观，而不需要重新计算其布局。重绘的代价通常比重排（Reflow）要小，但频繁的重绘仍然会影响性能。以下是一些常见的会引发重绘的操作：
+
+### 1. 改变颜色
+
+改变元素的颜色属性（如 `color`、`background-color`、`border-color`）会引发重绘。
+
+```javascript
+element.style.color = 'red';
+element.style.backgroundColor = 'blue';
+element.style.borderColor = 'green';
+```
+
+### 2. 改变背景图片
+
+改变元素的背景图片（如 `background-image`）会引发重绘。
+
+```javascript
+element.style.backgroundImage = 'url("image.jpg")';
+```
+
+### 3. 改变边框样式
+
+改变元素的边框样式（如 `border-style`、`border-width`）会引发重绘。
+
+```javascript
+element.style.borderStyle = 'solid';
+element.style.borderWidth = '2px';
+```
+
+### 4. 改变阴影
+
+改变元素的阴影（如 `box-shadow`、`text-shadow`）会引发重绘。
+
+```javascript
+element.style.boxShadow = '10px 10px 5px #888888';
+element.style.textShadow = '2px 2px 5px #000000';
+```
+
+### 5. 改变透明度
+
+改变元素的透明度（如 `opacity`）会引发重绘。
+
+```javascript
+element.style.opacity = '0.5';
+```
+
+### 6. 改变可见性
+
+改变元素的可见性（如 `visibility`）会引发重绘。
+
+```javascript
+element.style.visibility = 'hidden';
+```
+
+### 7. 改变背景渐变
+
+改变元素的背景渐变（如 `background`）会引发重绘。
+
+```javascript
+element.style.background = 'linear-gradient(to right, red, yellow)';
+```
+
+### 8. 改变伪元素样式
+
+改变伪元素（如 `::before`、`::after`）的样式会引发重绘。
+
+```css
+.element::before {
+    content: '';
+    background-color: red;
+}
+```
+
+### 优化建议
+
+为了减少重绘的次数和性能消耗，可以采取以下优化措施：
+
+1. **合并样式更改**：将多次样式更改合并为一次更改，减少重绘的次数。
+
+```javascript
+// 不推荐：多次更改样式
+element.style.color = 'red';
+element.style.backgroundColor = 'blue';
+
+// 推荐：合并更改
+element.style.cssText = 'color: red; background-color: blue;';
+```
+
+2. **使用类名替代内联样式**：通过添加或删除类名来更改样式，而不是直接修改内联样式。
+
+```javascript
+// 不推荐：直接修改内联样式
+element.style.visibility = 'hidden';
+
+// 推荐：使用类名
+element.classList.add('hidden');
+```
+
+3. **批量操作DOM**：在进行多次DOM操作时，使用文档片段（DocumentFragment）或将元素脱离文档流，操作完成后再插入文档。
+
+```javascript
+// 使用文档片段
+const fragment = document.createDocumentFragment();
+for (let i = 0; i < 100; i++) {
+    const newElement = document.createElement('div');
+    fragment.appendChild(newElement);
+}
+document.body.appendChild(fragment);
+```
+
+4. **减少不必要的重绘**：避免频繁改变会引发重绘的属性，尤其是在动画和交互中。
+
+```javascript
+// 不推荐：频繁改变透明度
+element.style.opacity = '0.5';
+element.style.opacity = '1';
+
+// 推荐：使用CSS动画
+element.classList.add('fade-in');
+```
+
+通过理解和避免引发重绘的操作，可以显著提高网页的性能和用户体验。
