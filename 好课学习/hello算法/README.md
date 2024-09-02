@@ -1,2 +1,3 @@
-- [hello-官网](https://www.hello-algo.com/)
-- [hello-algo-1.1.0-zh-javascript.pdf](https://github.com/user-attachments/files/16831580/hello-algo-1.1.0-zh-javascript.pdf)
+- [hello-网页版](https://www.hello-algo.com/)
+- [hello-pdf版](https://github.com/user-attachments/files/16831580/hello-algo-1.1.0-zh-javascript.pdf)
+- [hello-code](https://github.com/krahets/hello-algo)
