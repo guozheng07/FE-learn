@@ -93,35 +93,71 @@ git status时，文件可能处于以下几种状态之一：
 9. refs
    - 这个目录包含所有的引用（分支、标签等），结构通常是 `heads`（分支）、`tags`（标签）和 `remotes`（远程分支）。
 
-以下是 `.git` 目录的一个可能的样例结构：
-```
-.git
-├── HEAD
-├── config
-├── description
-├── hooks
-│   ├── applypatch-msg.sample
-│   ├── ...
-├── index
-├── info
-│   └── exclude
-├── logs
-│   ├── HEAD
-│   └── refs
-│       ├── heads
-│       │   └── main
-│       ├── remotes
-│       │   └── origin
-│       │       └── main
-├── objects
-│   ├── 01
-│   │   └── d5f8e6f1
-│   ├── ...
-├── refs
-│   ├── heads
-│   │   └── main
-│   ├── tags
-│   └── remotes
-│       └── origin
-│           └── main
-```
+# 3 说说Git常用的命令有哪些？
+1. 配置
+   - git config [--global] user.name "[name]"
+   - git config [--global] user.email "[email address]"
+2. 启动
+   - git init [project-name]
+   - git clone url
+3. 日常操作
+   - git init
+   - git add .
+   - git add <具体某个文件路径+全名> 提交某些文件到缓存区
+   - git diff 查看 add 内容
+   - git diff --staged 查看 commit 内容
+   - git status
+   - git pull <远程仓库名> <远程分支名> 拉取远程仓库的分支与本地当前分支合并
+   - git pull <远程仓库名> <远程分支名>:<本地分支名> 拉取远程仓库的分支与本地某个分支合并
+   - git commit -m "<注释>"
+   - git commit -v 提交时显示所有 diff 信息
+   - **git commit --amend [file1] [file2]** 重做上一次 commit，并包括指定文件的新变化
+4. 分支操作
+   - git branch 查看本地所有分支
+   - git branch -r 查看远程所有分支
+   - git branch -a 查看本地和远程所有分支
+   - git merge <分支名>
+   - **git merge --abort** 合并分支出现冲突时，取消合并，一切回到合并前的状态
+   - git branch <新分支名> 基于当前分支，新建一个分支，不会切换到新分支上
+   - git checkout -b <新分支名> 基于当前分支，新建一个分支，并切换到新分支上
+   - git checkout --orphan <新分支名> 新建一个空分支（创建的分支并不是基于任何现有分支的最新提交，而是一个完全没有历史记录的新分支。这意味着新分支没有任何父提交，也没有任何与现有分支共享的提交。**你只会有工作区中的文件，并且所有文件都会显示为未跟踪状态**）
+   - git branch -D <分支名> 删除本地某个分支
+   - git push <远程仓库>:<分支名> 删除远程某个分支（git push <远程仓库> --delete <分支名>也可以）
+   - **git branch <新分支名称> <提交ID>** 从特定的提交点开始创建一个新分支
+   - git checkout <分支名>
+   - git checkout <远程库名>/<分支名> 切换到线上某个分支
+5. 远程同步
+   - git fetch [remote] 下载远程仓库的所有变动
+   - git remote -v 显示所有远程仓库
+   - git pull [remote] [branch] 拉取远程仓库分支与当前本地分支合并
+   - git fetch 获取线上最新版信息记录，不合并
+   - git push [remote] [branch] 上传本地分支到远程仓库
+   - git push [remote] --force 强行推动当前分支到远程仓库，即使有冲突
+   - git push [remote] --all 推动所有分支到远程仓库
+6. 撤销
+   - git checkout [file] 恢复暂存区的指定文件到工作区
+   - **git checkout [commit] [file]** 恢复某个 commit 的指定文件到暂存区和工作区
+   - git chekcout . 恢复暂存区的所有文件到工作区
+   - git reset [commit] 重置当前分支的指针为指定 commit，同时重置暂存区，但工作区不变
+   - **git reset --hard** 重置暂存区和工作区，与上一次 commit 保持一致
+   - git reset [file] 重置暂存区的指定文件，与上一次 commit 保持一致，但工作区不变
+   - **git revert [commit] 撤销特定的提交**（通过创建一个新的提交来撤销指定提交的更改，因此不会破坏提交历史。这使得 git revert 特别适合在公共分支上使用，因为它不会重写历史记录）
+7. 存储
+   - git stash 将当前工作目录中的未提交更改（包括暂存区和工作区的更改）保存到一个堆栈中，并清理工作目录，使其恢复到干净的状态。**（自己习惯用 git stash save -u）**
+   - git stash pop 取出储藏中最后存入的工作状态进行恢复，会删除储藏
+   - git stash list
+   - git stash apply <储藏的名称> 取出储藏对应的工作状态进行恢复，不会删除储藏
+   - git stash clear
+   - git stash drop <储藏的名称> 删除对应的某个储藏
+commit 规范：
+- feat
+- fix
+- refactor（代码重构）
+- docs（文档修改）
+- style（代码格式修改，注意不是 css 修改）
+- test（测试用例修改）
+- chore（其他修改，例如构建流程、依赖管理）
+
+reset 和 revert 的区别：
+- reset **（慎用）**：真实硬性回滚，目标版本后面的提交记录全部丢失了
+- revert：同样回滚，这个回滚操作相当于一个提交，目标版本后面的提交疾苦也全部都有
