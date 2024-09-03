@@ -1,3 +1,11 @@
+1. 学习资料
 - [hello-网页版](https://www.hello-algo.com/)
 - [hello-pdf版](https://github.com/user-attachments/files/16831580/hello-algo-1.1.0-zh-javascript.pdf)
 - [hello-code](https://github.com/krahets/hello-algo)
+
+2. 学习路线
+- 阶段一：算法入门。我们需要熟悉各种数据结构的特点和用法，学习不同算法的原理、流程、用途和效 率等方面的内容。
+- 阶段二：刷算法题。建议从热门题目开刷，先积累至少 100 道题目，熟悉主流的算法问题。初次刷题 时，“知识遗忘”可能是一个挑战，但请放心，这是很正常的。我们可以按照“艾宾浩斯遗忘曲线”来 复习题目，通常在进行 3~5 轮的重复后，就能将其牢记在心。推荐的题单和刷题计划请见https://github.com/krahets/LeetCode-Book。
+- 阶段三：搭建知识体系。在学习方面，我们可以阅读算法专栏文章、解题框架和算法教材，以不断丰富 知识体系。在刷题方面，可以尝试采用进阶刷题策略，如按专题分类、一题多解、一解多题等，相关的 刷题心得可以在各个社区找到。
+
+![image](https://github.com/user-attachments/assets/f6db3c05-208b-4b4a-a01e-4b11b4d28227)
