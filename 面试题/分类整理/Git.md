@@ -162,4 +162,46 @@ reset 和 revert 的区别：
 - reset **（慎用）**：真实硬性回滚，目标版本后面的提交记录全部丢失了
 - revert：同样回滚，这个回滚操作相当于一个提交，目标版本后面的提交疾苦也全部都有
 
-# 4 说说 Git
+# 4 说说 Git 中 HEAD、工作树和索引之间的区别？
+## 4.1 HEAD
+当我们切换分支时，HEAD 指针通常指向我们所在的分支；当我们在某个分支上创建新的提交时，分支指针总是会指向当前分支的最新提交。
+
+## 4.2 工作树和索引
+在 Git 管理下，大家实际操作的目录被成为工作树，也就是工作区域。
+
+在数据库和工作树之间有索引，索引是为了向数据库提交做准备的区域，也被成为暂存区域。
+
+## 4.3 区别
+![image](https://github.com/user-attachments/assets/293b55ab-c25a-4886-aa81-4d3ea5c8eaab)
+
+# 5 说说 git 发生冲突的场景？如何解决？
+## 5.1 是什么
+出现冲突的场景：多个分支修改了同一个文件（任何地方）或多个分支修改了同一个文件的名称。
+
+![image](https://github.com/user-attachments/assets/d2dc878f-dae4-49c5-a283-1a22d6198bac)
+
+## 5.2 分析
+分析特定场景下执行 merge 时，是否会发生冲突。
+
+![image](https://github.com/user-attachments/assets/8533bad2-cbe2-4b8c-b14d-b6ef0e4861a3)
+
+## 5.3 总结
+![image](https://github.com/user-attachments/assets/faa28530-93ec-4b1c-8697-2ce0c6421a63)
+
+# 6 说说 Git 中 fork、clone、branch 这三个概念，有什么区别？
+## 6.1 是什么
+
+## 6.2 如何使用
+整体流程见下：
+![image](https://github.com/user-attachments/assets/82c97f90-b575-4081-b518-7c6b5c15046c)
+
+## 6.3 区别
+![image](https://github.com/user-attachments/assets/f8bb8f36-5147-4ebf-8bf1-8f283ffd8ca6)
+
+# 7 说说你对 git pull 和 git fetch 的理解？有什么区别？
+## 7.1 是什么
+![image](https://github.com/user-attachments/assets/97873ae8-085c-440d-90e1-d493371a8b62)
+
+![image](https://github.com/user-attachments/assets/73cbbdf7-42e8-4576-847e-11b795cc7175)
+
+## 7.2 使用
