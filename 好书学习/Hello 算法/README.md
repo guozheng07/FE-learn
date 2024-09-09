@@ -281,6 +281,74 @@ function recur(n) {
 需要注意的是，**在循环中初始化变量或调用函数而占用的内存，在进入下一循环后就会被释放，因此不会累积占用空间，空间复杂度仍为 𝑂(1)** 。
 
 2. 线性阶 𝑂(𝑛)
+**线性阶常见于元素数量与 𝑛 成正比的数组、链表、栈、队列等**。
+```
+// === File: space_complexity.js ===
+/* 线性阶 */
+function linear(n) {
+   // 长度为 n 的数组占用 O(n) 空间
+   const nums = new Array(n);
+   // 长度为 n 的列表占用 O(n) 空间
+   const nodes = [];
+   for(let i = 0; i < n; i++){
+        nodes.push(new ListNode(i));
+    }
+   // 长度为 n 的哈希表占用 O(n) 空间
+   const map = new Map();
+   for(let i = 0; i < n; i++){
+        map.set(i, i.toString());
+    }
+}
+```
 
+![image](https://github.com/user-attachments/assets/c57b8814-edde-4581-9899-52a878d8d147)
 
-3. 
+3. 平方阶 𝑂(𝑛^2)
+**平方阶常见于矩阵和图，元素数量与 𝑛 成平方关系**。
+```
+// === File: space_complexity.js ===
+
+/* 平方阶(递归实现) */
+function quadratic(n) {
+    // 矩阵占用 O(n^2) 空间
+    const numMatrix = Array(n)
+        .fill(null)
+        .map(() => Array(n).fill(null));
+    // 二维列表占用 O(n^2) 空间
+    const numList = [];
+    for (let i = 0; i < n; i++) {
+        const tmp = [];
+        for (let j = 0; j < n; j++) {
+            tmp.push(0);
+        }
+        numList.push(tmp);
+    }
+}
+```
+
+![image](https://github.com/user-attachments/assets/7bf0a094-b6f1-4b6e-adf8-d81121074087)
+
+4. 指数阶 𝑂(2𝑛)
+**指数阶常见于二叉树**。
+```
+// === File: space_complexity.js ===
+
+/* 指数阶(建立满二叉树) */
+function buildTree(n) {
+    if (n === 0) return null;
+    const root = new TreeNode(0);
+    root.left = buildTree(n - 1);
+    root.right = buildTree(n - 1);
+    return root;
+}
+```
+
+![image](https://github.com/user-attachments/assets/6a3ca9f4-8b39-4d8f-bb42-67ada0df5af2)
+
+5. 对数阶 𝑂(log 𝑛)
+![image](https://github.com/user-attachments/assets/37c72a2d-818b-4586-8e99-313ccad4a4b6)
+
+### 4.3.4 权衡时间与空间
+**降低时间复杂度通常需要以提升空间复杂度为代价，反之亦然**。我们将牺牲内存空间来提升算法运行速度的 思路称为“以空间换时间”;反之，则称为“以时间换空间”。
+
+选择哪种思路取决于我们更看重哪个方面。**在大多数情况下，时间比空间更宝贵，因此“以空间换时间”通 常是更常用的策略**。当然，**在数据量很大的情况下，控制空间复杂度也非常重要**。
